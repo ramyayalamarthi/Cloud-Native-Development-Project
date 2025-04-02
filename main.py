@@ -59,7 +59,7 @@ def index():
         <ul>
     """
     for file in list_files():
-        index_html += f'<li><a href="/files/{file}" style="color: white;">{file}</a></li>'
+        index_html += f'<li><a href="{file}" style="color: white;">{file}</a></li>'
     index_html += "</ul></body></html>"
 
     return index_html
@@ -77,18 +77,10 @@ def upload():
 @app.route('/files')
 def list_files():
     cloud_files = get_list_of_files(bucket_name)
-    files = os.listdir("./files")
-    paths_files = ["files/" + item for item in files]
-    downloads =list(set(cloud_files) - set(paths_files))
-    for i in downloads:
-      download_file(bucket_name,i)
-
-    files = os.listdir("./files")  
     jpegs = []
-    for file in files:
+    for file in cloud_files:
         if file.lower().endswith((".jpeg", ".jpg")):
             jpegs.append(file)
-    
     return jpegs
 
 @app.route('/files/<filename>')
@@ -96,6 +88,7 @@ def get_file(filename):
     files_name = filename.split('.')[0]
     time_stamp = str(files_name.split('_')[0])
     json_file  = "./files/"+ files_name + ".json"
+    download_file(bucket_name, "files/"+ files_name + ".json")
     file_name_without_ts = files_name.replace(time_stamp+"_","")
     with open(json_file, 'r') as file:
         data = json.load(file)
@@ -140,6 +133,7 @@ def get_file(filename):
 
 @app.route('/image/<filename>')
 def image_file(filename):
+    download_file(bucket_name, "files/"+filename)
     file_path = os.path.join('./files', filename)
 
     if not os.path.exists(file_path):
