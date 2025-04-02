@@ -5,7 +5,7 @@ from genai import upload_to_gemini
 import json
 from storage import download_file, get_list_of_files
 
-ui_background_colour = "green"
+ui_background_colour = "blue"
 os.makedirs('files', exist_ok = True)
 bucket_name = "cnd_images"
 
